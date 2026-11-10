@@ -1,6 +1,6 @@
 # Online Bookstore Management System
 
-SE1020 – Object Oriented Programming project (Spring Boot + MySQL, layer-based architecture).
+SE1020 – Object Oriented Programming project  (Spring Boot + MySQL, layer-based architecture).
 
 ## Requirements
 - JDK 26 
