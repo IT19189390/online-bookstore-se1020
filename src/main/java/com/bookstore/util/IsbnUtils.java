@@ -4,6 +4,7 @@ import java.util.Locale;
 
 public final class IsbnUtils {
     private IsbnUtils() {
+        
     }
 
     public static String normalize(String isbn) {
