@@ -3,7 +3,7 @@
 SE1020 – Object Oriented Programming project (Spring Boot + MySQL, layer-based architecture).
 
 ## Requirements
-- JDK 26 -
+- JDK 26 
 - MySQL Server 8 (running on port 3306)
 - IntelliJ IDEA (free version is fine) or VS Code with Extension Pack for Java
 
