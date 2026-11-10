@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SupplierStorageManagerTest {
     private final File suppliersFile = new File("data/suppliers.txt");
     private SupplierStorageManager storageManager;
+    
 
     @BeforeEach
     void setUp() {
