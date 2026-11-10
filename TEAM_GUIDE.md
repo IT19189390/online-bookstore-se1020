@@ -2,7 +2,7 @@
 
 How to add your component. The project uses a **layer-based architecture**: each layer is a package, and every member adds their classes into the shared layer packages. Inventory (Component 3) is done, so use it as the example.
 
-## 1. Get the projects
+## 1. Get the project
 
 1. Accept the GitHub collaborator invite.
 2. Clone: `git clone https://github.com/IT19189390/online-bookstore.git`
