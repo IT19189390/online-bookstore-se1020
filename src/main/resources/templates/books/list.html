@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Book Management')}"></head>
+
+<body>
+<div class="app">
+
+    <aside th:replace="~{fragments/layout :: sidebar}"></aside>
+
+    <main class="main">
+
+        <header class="page-head">
+            <div>
+                <h1>Book Management</h1>
+                <p class="lead">Manage the bookstore catalogue, book details and prices.</p>
+            </div>
+
+            <a th:href="@{/modules/books/new}" class="btn btn-primary">
+                + Add New Book
+            </a>
+        </header>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <section class="stat-row" aria-label="Book totals">
+            <div class="stat">
+                <span class="stat-value" th:text="${#lists.size(books)}">0</span>
+                <span class="stat-label">Total Books</span>
+            </div>
+        </section>
+
+        <div class="table-wrap">
+            <table class="table">
+
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Book</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Publisher</th>
+                    <th class="num">Price (Rs.)</th>
+                    <th>Published Date</th>
+                    <th><span class="sr-only">Actions</span></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="book : ${books}">
+
+                    <td class="mono" th:text="${book.bookId}">1</td>
+
+                    <td>
+                        <a th:href="@{/modules/books/details/{id}(id=${book.bookId})}"
+                           class="row-title"
+                           th:text="${book.title}">
+                            Book Title
+                        </a>
+                        <span class="muted" th:text="${book.isbn}">ISBN</span>
+                    </td>
+
+                    <td th:text="${book.author}">Author</td>
+                    <td th:text="${book.category}">Category</td>
+                    <td th:text="${book.publisher}">Publisher</td>
+
+                    <td class="num"
+                        th:text="${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}">
+                        0.00
+                    </td>
+
+                    <td th:text="${book.publishedDate != null ? #temporals.format(book.publishedDate, 'd MMM yyyy') : 'Not available'}">
+                        Not available
+                    </td>
+
+                    <td class="row-actions">
+
+                        <a th:href="@{/modules/books/details/{id}(id=${book.bookId})}"
+                           class="link">
+                            View
+                        </a>
+
+                        <a th:href="@{/modules/books/edit/{id}(id=${book.bookId})}"
+                           class="link edit-colour">
+                            Edit
+                        </a>
+
+                        <form th:action="@{/modules/books/delete/{id}(id=${book.bookId})}"
+                              method="post"
+                              class="inline-form"
+                              data-confirm="Delete this book? This can't be undone.">
+
+                            <button type="submit" class="link link-danger">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(books)}">
+                    <td colspan="8" class="empty">
+                        No books available. Add your first book to the catalogue.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+
+<script th:src="@{/js/app.js}"></script>
+
+</body>
+</html>
