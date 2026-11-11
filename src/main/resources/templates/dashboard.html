@@ -1,82 +1,321 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+
 <body>
 <div class="app">
+
+    <!-- Sidebar -->
     <aside th:replace="~{fragments/layout :: sidebar}"></aside>
 
     <main class="main">
+
+        <!-- Dashboard Heading -->
         <header class="page-head">
             <div>
                 <h1>Dashboard</h1>
-                <p class="lead">Pick a module to manage the bookstore.</p>
+                <p class="lead">
+                    Overview of the bookstore management system.
+                </p>
             </div>
         </header>
 
         <div th:replace="~{fragments/layout :: flash}"></div>
 
+        <!-- Six Management Modules -->
         <section class="module-grid" aria-label="Modules">
-            <a th:each="m : ${modules}" th:href="@{${m.url}}" class="module-tile"
+
+            <a th:each="m : ${modules}"
+               th:href="@{${m.url}}"
+               class="module-tile"
                th:classappend="${m.implemented} ? 'is-ready' : 'is-pending'">
+
                 <h2 th:text="${m.name}">Module</h2>
-                <p th:text="${m.description}">Description</p>
-                <span class="tile-state" th:text="${m.implemented} ? 'Open module' : 'In development'">Open</span>
+
+                <p th:text="${m.description}">
+                    Description
+                </p>
+
+                <span class="tile-state"
+                      th:text="${m.implemented} ? 'Open module' : 'In development'">
+                    Open
+                </span>
+
             </a>
+
         </section>
 
+
+        <!-- Book Catalogue Overview -->
         <section class="panel">
+
             <div class="panel-head">
-                <h2>Stock that needs attention</h2>
-                <a th:href="@{/inventory(status='LOW_STOCK')}" class="link">See all low stock</a>
+                <div>
+                    <h2>Book Catalogue Overview</h2>
+                    <p class="muted">
+                        A quick overview of the bookstore's registered books.
+                    </p>
+                </div>
+
+                <a th:href="@{/modules/books}" class="link">
+                    Manage books
+                </a>
             </div>
 
+            <!-- Catalogue Statistics -->
             <div class="stat-row">
-                <div class="stat">
-                    <span class="stat-value" th:text="${summary.totalItems}">0</span>
-                    <span class="stat-label">Stock items</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value" th:text="${summary.needReorderCount}">0</span>
-                    <span class="stat-label">Need reorder</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-value" th:text="${summary.outOfStockCount}">0</span>
-                    <span class="stat-label">Out of stock</span>
-                </div>
+
                 <div class="stat">
                     <span class="stat-value"
-                          th:text="'Rs. ' + ${#numbers.formatDecimal(summary.totalValue, 1, 'COMMA', 2, 'POINT')}">Rs. 0.00</span>
-                    <span class="stat-label">Stock value</span>
+                          th:text="${totalBooks}">
+                        0
+                    </span>
+                    <span class="stat-label">
+                        Total Books
+                    </span>
                 </div>
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:text="${totalCategories}">
+                        0
+                    </span>
+                    <span class="stat-label">
+                        Categories
+                    </span>
+                </div>
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:text="${#numbers.formatDecimal(averageBookPrice, 1, 'COMMA', 2, 'POINT')}">
+                        0.00
+                    </span>
+                    <span class="stat-label">
+                        Average Book Price (Rs.)
+                    </span>
+                </div>
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:if="${latestBook != null}"
+                          th:text="${latestBook.title}">
+                        Latest Book
+                    </span>
+
+                    <span class="stat-value"
+                          th:if="${latestBook == null}">
+                        -
+                    </span>
+
+                    <span class="stat-label">
+                        Latest Addition
+                    </span>
+                </div>
+
             </div>
 
-            <div class="table-wrap" th:unless="${#lists.isEmpty(attentionItems)}">
+            <!-- Recently Added Books -->
+            <div class="panel-head">
+                <h2>Recently Added Books</h2>
+
+                <a th:href="@{/modules/books}" class="link">
+                    View all books
+                </a>
+            </div>
+
+            <div class="table-wrap"
+                 th:unless="${#lists.isEmpty(recentlyAddedBooks)}">
+
                 <table class="table">
+
+                    <thead>
+                    <tr>
+                        <th scope="col">Book</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Category</th>
+                        <th scope="col" class="num">Price</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="book : ${recentlyAddedBooks}">
+
+                        <td>
+                            <a th:href="@{/modules/books/details/{id}(id=${book.bookId})}"
+                               class="row-title"
+                               th:text="${book.title}">
+                                Book Title
+                            </a>
+
+                            <span class="muted"
+                                  th:text="${book.isbn}">
+                                ISBN
+                            </span>
+                        </td>
+
+                        <td th:text="${book.author}">
+                            Author
+                        </td>
+
+                        <td th:text="${book.category}">
+                            Category
+                        </td>
+
+                        <td class="num"
+                            th:text="'Rs. ' + ${#numbers.formatDecimal(book.price, 1, 'COMMA', 2, 'POINT')}">
+                            Rs. 0.00
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p th:if="${#lists.isEmpty(recentlyAddedBooks)}"
+               class="empty">
+                No books have been added to the catalogue yet.
+            </p>
+
+        </section>
+
+
+        <!-- Existing Inventory Section -->
+        <section class="panel">
+
+            <div class="panel-head">
+                <div>
+                    <h2>Stock that needs attention</h2>
+                    <p class="muted">
+                        Monitor stock levels and identify items requiring action.
+                    </p>
+                </div>
+
+                <a th:href="@{/inventory(status='LOW_STOCK')}"
+                   class="link">
+                    See all low stock
+                </a>
+            </div>
+
+            <!-- Inventory Statistics -->
+            <div class="stat-row">
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:text="${summary.totalItems}">
+                        0
+                    </span>
+                    <span class="stat-label">
+                        Stock items
+                    </span>
+                </div>
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:text="${summary.needReorderCount}">
+                        0
+                    </span>
+                    <span class="stat-label">
+                        Need reorder
+                    </span>
+                </div>
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:text="${summary.outOfStockCount}">
+                        0
+                    </span>
+                    <span class="stat-label">
+                        Out of stock
+                    </span>
+                </div>
+
+                <div class="stat">
+                    <span class="stat-value"
+                          th:text="'Rs. ' + ${#numbers.formatDecimal(summary.totalValue, 1, 'COMMA', 2, 'POINT')}">
+                        Rs. 0.00
+                    </span>
+                    <span class="stat-label">
+                        Stock value
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Inventory Attention Table -->
+            <div class="table-wrap"
+                 th:unless="${#lists.isEmpty(attentionItems)}">
+
+                <table class="table">
+
                     <thead>
                     <tr>
                         <th scope="col">Book</th>
                         <th scope="col">Type</th>
                         <th scope="col" class="num">On hand</th>
                         <th scope="col">Status</th>
-                        <th scope="col" class="num">Suggested reorder</th>
+                        <th scope="col" class="num">
+                            Suggested reorder
+                        </th>
                     </tr>
                     </thead>
+
                     <tbody>
+
                     <tr th:each="item : ${attentionItems}">
+
                         <td>
-                            <a th:href="@{/inventory/{id}(id=${item.itemId})}" class="row-title" th:text="${item.bookTitle}">Title</a>
-                            <span class="muted" th:text="${item.itemId}">INV001</span>
+                            <a th:href="@{/inventory/{id}(id=${item.itemId})}"
+                               class="row-title"
+                               th:text="${item.bookTitle}">
+                                Title
+                            </a>
+
+                            <span class="muted"
+                                  th:text="${item.itemId}">
+                                INV001
+                            </span>
                         </td>
-                        <td th:text="${item.typeLabel}">Printed book</td>
-                        <td class="num" th:text="${item.quantity}">0</td>
-                        <td><span th:replace="~{fragments/layout :: status(${item})}"></span></td>
-                        <td class="num" th:text="${item.suggestedReorderQuantity}">0</td>
+
+                        <td th:text="${item.typeLabel}">
+                            Printed book
+                        </td>
+
+                        <td class="num"
+                            th:text="${item.quantity}">
+                            0
+                        </td>
+
+                        <td>
+                            <span th:replace="~{fragments/layout :: status(${item})}">
+                            </span>
+                        </td>
+
+                        <td class="num"
+                            th:text="${item.suggestedReorderQuantity}">
+                            0
+                        </td>
+
                     </tr>
+
                     </tbody>
+
                 </table>
+
             </div>
-            <p th:if="${#lists.isEmpty(attentionItems)}" class="empty">All stock is above its reorder level.</p>
+
+            <p th:if="${#lists.isEmpty(attentionItems)}"
+               class="empty">
+                All stock is above its reorder level.
+            </p>
+
         </section>
+
     </main>
 </div>
 </body>
