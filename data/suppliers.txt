@@ -1,0 +1,6 @@
+# SUPPLIER_ID | TYPE | SUPPLIER_NAME | PHONE | EMAIL | COMPANY | REG_DATE | EXTRA_DETAILS
+SUP-1001|LOCAL|Maya Chen|+1 (312) 847-1928|maya.chen@northstarbooks.com|Northstar Books|2026-01-18|IL-BR-48291
+SUP-1002|LOCAL|Luca Moretti|+39 02 9475 2186|luca.moretti@paginevere.it|Pagine Vere S.r.l.|2025-11-06|1111
+SUP-1003|LOCAL|Amina Okafor|+1 (404) 555-0172|amina.okafor@atlasliterary.com|Atlas Literary Supply|2026-02-27|GA-BR-19384
+SUP-1004|INTERNATIONAL|Sofia Alvarez|+34 91 442 8061|sofia.alvarez@iberiapress.es|Iberia Press Group|2025-09-14|Spain:ES-IMP-2281
+SUP-1005|LOCAL|Ethan Brooks|+1 (206) 555-0136|ethan.brooks@cedarhouse.com|Cedar House Distribution|2026-03-11|811111005
